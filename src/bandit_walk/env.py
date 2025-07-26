@@ -1,5 +1,5 @@
 import numpy as np
-from typing import tuple
+from typing import Tuple
 
 class BanditWalkEnv():
     '''
@@ -13,27 +13,45 @@ class BanditWalkEnv():
     '''
 
     def __init__(self, start_state):
-        state: int = 0 
-        next_state: int = 0
-        state_table: dict = {state: 0}
+        """Initializes the environment with agent at the start state
+
+        Args:
+            start_state (int): Starting state of the agent.
+        """
+        self.start_state = start_state
+        self.state: int = 0 
+        self.next_state: int = 0
+        '''
+        -state table is of keys state
+            state 1, state2, state3 
+
+        - At each state, the agent can take two actions, 0 (left), 1 (right)
+
+        - Each action results in the next_state, reward, and if it is a terminal
+        '''
+        self.state_table: dict = {0: {0: (0, 0, True),
+                                 1: (1, 0, True)},
+                             1: {0: (0, 0, True),
+                                 1: (2, 1, True)},
+                             2: {0: (2, 0, True),
+                                 1: (2, 0, True)}
+                            }
 
         transition_probs: int = 0
 
 
 
-    def step(self, action:int) -> tuple(int, int, int, bool):
+    def step(self, action:int) -> Tuple[int, int, bool]:
         """A single step through the environment.
 
 
         Args:
             action (int): Action by the agent.
         """
-        reward, next_state, is_terminal = self.state_table[self.state][action]
+        next_state, reward, is_terminal = self.state_table[self.state][action]
         self.state = next_state
-        if not is_terminal:
-            
-
-        return (reward, next_state, is_terminal)
+        
+        return (next_state, reward, is_terminal)
 
         
 

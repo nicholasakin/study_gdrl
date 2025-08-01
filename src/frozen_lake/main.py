@@ -10,7 +10,7 @@ custom_map = [
     "HFGH"
 ]
 
-env = FrozenLake(slippery=False, custom_layout=custom_map)
+env = FrozenLake(slippery=True, custom_layout=custom_map)
 
 
 state = env.reset()

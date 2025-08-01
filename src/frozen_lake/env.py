@@ -16,6 +16,7 @@ class FrozenLake:
         self.goal_states = []
         self.terminal_states = []
         self._init_states()
+        self.state_table: Dict[int, Dict[int, List[Tuple[int, float, int, bool]]]] = {}
         self._build_transition_table()
 
     def _init_states(self):
@@ -28,7 +29,6 @@ class FrozenLake:
                     self.goal_states.append((i, j))
 
     def _build_transition_table(self):
-        self.state_table: Dict[int, Dict[int, List[Tuple[int, float, int, bool]]]] = {}
         for s in range(self.grid_size ** 2):
             row, col = divmod(s, self.grid_size)
             self.state_table[s] = {}

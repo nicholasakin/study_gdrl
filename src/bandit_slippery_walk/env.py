@@ -1,4 +1,6 @@
 import numpy as np
+import math
+import random
 from typing import Tuple
 
 class BanditWalkEnv():
@@ -70,12 +72,25 @@ class BanditWalkEnv():
         Args:
             action (int): Action by the agent.
         """
-        next_state, reward, is_terminal = self.state_table[self.state][action]
+        probs = []
+        for tup in self.state_table[self.state][action]:
+            (next_state,
+             trans_prob,
+             reward,
+             is_terminal) = tup
+            probs.append(trans_prob)
+
+        selected_action = random.choices([0,1], weights=probs)
+        (next_state,
+         trans_prob,
+         reward,
+         is_terminal) = self.state_table[self.state][selected_action]
+
         self.state = next_state
         
         return (next_state, reward, is_terminal)
 
-        
+
 
 
 

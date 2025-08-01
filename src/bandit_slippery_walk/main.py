@@ -2,23 +2,29 @@ from bandit_walk.env import BanditWalkEnv
 import random
 
 
-num_times = 5
+num_steps = 10
 
-for i in range(num_times):
-    print(f"\nNum Times Run: {i}")
-    bw = BanditWalkEnv(start_state=1)
-
+bw = BanditWalkEnv(start_state=1)
+for i in range(num_steps):
+    print(f"\nRun: {i}")
 
     is_terminal = False
-    while not is_terminal:
+    if is_terminal:
+        print("In terminal state")
 
+    action = random.choice([0,1])
+    if action == 0:
+        a = "left"
+    else:
+        a = "right"
 
-        action = random.choice([0,1])
-
-
-        next_state, reward, is_terminal = bw.step(action=action)
-        print(f"I am in state: {next_state} with reward {reward}")
-        print(f"This is terminal {is_terminal}")
+    (next_state,
+     reward,
+     is_terminal) = bw.step(action=action)
+    print(f"I chose action {a}\n"
+          f"Now in state: {next_state}\n"
+          f"With reward {reward}")
+    print(f"This is terminal {is_terminal}")
 
 
 

@@ -87,3 +87,105 @@ class FrozenLake:
                     elif char == "G": row += "G "
             print(row)
         print()
+
+
+
+
+class FrozenLakeHCode:
+    def __init__(self, start_state: int = 0, name = "FrozenLakeHCode"):
+        self.name = name
+        self.grid_size = 4
+        self.state = start_state
+
+        '''
+        Dictionary representing state, action
+        inner keys: next state, transition probability, reward, is_terminal
+        Total transition probabilty between 3 orthogonal directions is: 0.33*3
+        actions:
+         0 - Left
+         1 - Down
+         2 - Right
+         3 - up
+
+        '''
+        self.state_table: dict = {
+            0: { 
+                0: [(0, 0.66, 0, False), (4, 0.33, 0, False)],
+                1: [(4, 0.33, 0, False), (0, 0.33, 0, False), (1, 0.33, 0, False)],
+                2: [(4, 0.33, 0, False), (0, 0.33, 0, False), (1, 0.33, 0, False)],
+                3: [(0, 0.66, 0, False), (1, 0.33, 0, False)] },
+            1: {0: [(0, 0.33, 0, False), (1, 0.33, 0, False), (5, 0.33, 0, True)],
+                1: [(5, 0.33, 0, True),  (0, 0.33, 0, False), (2, 0.33, 0, False)],
+                2: [(2, 0.33, 0, False), (1, 0.33, 0, False), (5, 0.33, 0, True)],
+                3: [(1, 0.33, 0, False), (0, 0.33, 0, False), (2, 0.33, 0, False)]},
+            2: {0: [(2, 0.33, 0, False), (1, 0.33, 0, False), (6, 0.33, 0, False)],
+                1: [(6, 0.33, 0, False), (1, 0.33, 0, False), (3, 0.33, 0, False)],
+                2: [(3, 0.33, 0, False), (2, 0.33, 0, False), (6, 0.33, 0, False)],
+                3: [(2, 0.33, 0, False), (1, 0.33, 0, False), (3, 0.33, 0, False)]},
+            3: {0: [(2, 0.33, 0, False), (7, 0.33, 0, True),  (3, 0.33, 0, False)],
+                1: [(7, 0.33, 0, True),  (3, 0.33, 0, False), (2, 0.33, 0, False)],
+                2: [(3, 0.66, 0, False), (7, 0.33, 0, True)],
+                3: [(3, 0.66, 0, False), (2, 0.33, 0, False)]},
+            4: {0: [(4, 0.33, 0, False), (8, 0.33, 0, False), (0, 0.33, 0, False)],
+                1: [(8, 0.33, 0, False), (4, 0.33, 0, False), (5, 0.33, 0, True)],
+                2: [(5, 0.33, 0, True),  (0, 0.33, 0, False), (8, 0.33, 0, False)],
+                3: [(0, 0.33, 0, False), (4, 0.33, 0, False), (5, 0.33, 0, True)]},
+            5: {0: [(4, 0.33, 0, False), (9, 0.33, 0, False), (1, 0.33, 0, False)],
+                1: [(9, 0.33, 0, False), (4, 0.33, 0, False), (6, 0.33, 0, False)],
+                2: [(6, 0.33, 0, False), (1, 0.33, 0, False), (9, 0.33, 0, False)],
+                3: [(1, 0.33, 0, False), (4, 0.33, 0, False), (6, 0.33, 0, False)]},
+            6: {0: [(5, 0.33, 0, True),  (10, 0.33, 0, False),(2, 0.33, 0, False)],
+                1: [(10, 0.33, 0, False), (5, 0.33, 0, True), (6, 0.33, 0, True)],
+                2: [(7, 0.33, 0, True), (2, 0.33, 0, False), (10, 0.33, 0, False)],
+                3: [(2, 0.33, 0, False), (5, 0.33, 0, True),  (7, 0.33, 0, True)]},
+            7: {0: [(6, 0.33, 0, False), (11, 0.33, 0, True), (3, 0.33, 0, False)],
+                1: [(11, 0.33, 0, True), (7, 0.33, 0, True),  (6, 0.33, 0, False)],
+                2: [(7, 0.33, 0, True), (11, 0.33, 0, True), (3, 0.33, 0, False)],
+                3: [(3, 0.33, 0, False), (7, 0.33, 0, True), (6, 0.33, 0, False)]},
+            8: {0: [(8, 0.33, 0, False), (12, 0.33, 0, True), (4, 0.33, 0, False)],
+                1: [(12, 0.33, 0, False),(8, 0.33, 0, False), (9, 0.33, 0, False)],
+                2: [(9, 0.33, 0, False), (4, 0.33, 0, False), (12, 0.33, 0, True)],
+                3: [(4, 0.33, 0, False), (8, 0.33, 0, False), (9, 0.33, 0, False)]},
+            9: {0: [(8, 0.33, 0, False), (13, 0.33, 0, False), (5, 0.33, 0, True)],
+                1: [(13, 0.33, 0, False), (8, 0.33, 0, False), (10, 0.33, 0, False)],
+                2: [(10, 0.33, 0, False), (5, 0.33, 0, True), (13, 0.33, 0, False)], 
+                3: [(5, 0.33, 0, True),  (8, 0.33, 0, False), (10, 0.33, 0, False)]},
+            10: {0: [(9, 0.33, 0, False), (14, 0.33, 0, False), (6, 0.33, 0, False)],
+                1: [(14, 0.33, 0, False), (11, 0.33, 0, True), (9, 0.33, 0, False)],
+                2: [(11, 0.33, 0, True), (6, 0.33, 0, False), (14, 0.33, 0, False)],
+                3: [(6, 0.33, 0, False), (9, 0.33, 0, False), (11, 0.33, 0, False)]},
+            11: {0: [(10, 0.33, 0, False), (15, 0.33, 1, True), (7, 0.33, 0, True)],
+                1: [(15, 0.33, 1, True), (11, 0.33, 0, True), (10, 0.33, 0, False)],
+                2: [(11, 0.33, 0, True), (7, 0.33, 0, True), (15, 0.33, 1, True)],
+                3: [(7, 0.33, 0, True), (11, 0.33, 0, True), (10, 0.33, 0, False)]},
+            12: {0: [(12, 0.66, 0, True), (8, 0.33, 0, False)],
+                1: [(12, 0.66, 0, True), (13, 0.33, 0, False)],
+                2: [(13, 0.33, 0, False), (8, 0.33, 0, False), (12, 0.33, 0, True)],
+                3: [(8, 0.33, 0, False), (12, 0.33, 0, True), (13, 0.33, 0, False)]},
+            13: {0: [(12, 0.33, 0, False), (13, 0.33, 0, False), (9, 0.33, 0, False)],
+                1: [(13, 0.33, 0, False), (12, 0.33, 0, True), (14, 0.33, 0, False)],
+                2: [(14, 0.33, 0, False), (9, 0.33, 0, False), (13, 0.33, 0, False)],
+                3: [(9, 0.33, 0, False), (12, 0.33, 0, True), (14, 0.33, 0, False)]},
+            14: {0: [(13, 0.33, 0, False), (14, 0.33, 0, False), (10, 0.33, 0, False)],
+                1: [(14, 0.33, 0, False), (15, 0.33, 1, True), (13, 0.33, 0, False)],
+                2: [(15, 0.33, 1, True), (10, 0.33, 0, False), (14, 0.33, 0, False)],
+                3: [(10, 0.33, 0, False), (13, 0.33, 0, False), (15, 0.33, 1, True)]},
+            15: {0: [(14, 0.33, 0, False), (15, 0.33, 1, True), (11, 0.33, 0, False)],
+                1: [(15, 0.66, 1, True), (14, 0.33, 0, False)],
+                2: [(15, 0.66, 1, True), (11, 0.33, 0, True)],
+                3: [(11, 0.33, 0, True), (14, 0.33, 0, False), (15, 0.33, 1, True)]},
+        } # state_table
+
+
+    def step(self, action: int) -> Tuple[int, int, bool]:
+        transitions = self.state_table[self.state][action]
+        chosen = random.choices(transitions, weights=[t[1] for t in transitions])[0]
+        next_state, _, reward, done = chosen
+        self.state = next_state
+
+        return next_state, reward, done
+
+    def reset(self):
+        self.state = 0
+        return self.state
+

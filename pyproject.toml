@@ -5,7 +5,9 @@ description = ""
 authors = ["Akin, Nicholas <nicholasakin@gmail.com>"]
 readme = "README.md"
 
-packages = [ {include = "bandit_walk", from = "src"}]
+packages = [ {include = "bandit_walk", from = "src/chpt_2"},
+            {include = "bandit_slippery_walk", from = "src/chpt_2"},
+            {include = "frozen_lake", from = "src/chpt_2"}]
 
 [tool.poetry.dependencies]
 python = "^3.13"
